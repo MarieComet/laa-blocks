@@ -8,12 +8,13 @@ const {
 } = wp.blocks
 
 const {
-  PanelBody,
+  	PanelBody,
 	PanelColor,
 	ButtonGroup,
 	Button,
 	ToggleControl,
 	RangeControl,
+	SelectControl,
 } = wp.components
 
 export default class Settings extends Component {
@@ -28,10 +29,21 @@ export default class Settings extends Component {
 
 	render() {
 
-		const { number_event, setAttributes, setState, backgroundColor, titleColor } = this.props
+		const { number_event, post_type, setAttributes, setState, backgroundColor, titleColor } = this.props
 		return (
 			<InspectorControls>
-				<PanelBody title={ __( 'Nombre d\'événements' ) }>
+				<PanelBody title={ __( 'Type de contenu' ) }>
+					<SelectControl
+						onChange={ post_type => setAttributes( { post_type } ) }
+						label={ __( 'Type de contenu' ) }
+						options={ [
+							{ value: 'Post', label: 'Articles' },
+							{ value: 'Events', label: 'Evenements' },
+						] }
+						value={ post_type }
+					/>
+				</PanelBody>
+				<PanelBody title={ __( 'Nombre d\'articles' ) }>
 					<RangeControl
 						value={ number_event }
 						onChange={ number_event => setAttributes( { number_event } ) }

@@ -14,9 +14,9 @@ const validAlignments = [ 'left', 'center', 'right', 'wide', 'full' ];
 registerBlockType(
 	'laa-blocks/posts',
 	{
-		title: __( "Grille d\'articles"),
-		description: __("Afficher la listes des articles"),
-		icon: 'admin-post',
+		title: __( "Articles récents"),
+		description: __("Afficher la listes des derniers contenus"),
+		icon: 'calendar-alt',
 		category: 'common',
 		keywords: [
 			__( 'recents posts alt' ),
@@ -27,9 +27,17 @@ registerBlockType(
 				type: 'integer',
 				default: 3,
 			},
+			post_type: {
+				type: 'string',
+				default: 'Post',
+			},
 			sectionTitle: {
 				type: 'string',
 				selector: '.section_title',
+			},
+			sectionSubTitle: {
+				type: 'string',
+				selector: '.section_subtitle',
 			},
 			backgroundColor: {
 				type: 'string',
@@ -56,13 +64,13 @@ registerBlockType(
 		edit: props => {
 		
 			const { attributes, className, setAttributes, setState, isSelected } = props
-			const { number_event, backgroundColor, titleColor, sectionTitle, align, contentAlign } = attributes
+			const { number_event, post_type, backgroundColor, titleColor, sectionTitle, sectionSubTitle, align, contentAlign } = attributes
 
 			return (
 				<Fragment>
 					<Toolbar { ...{ align, contentAlign, setAttributes } } />
-					<Preview { ...{ className, number_event, sectionTitle, backgroundColor, titleColor, align, setAttributes, setState, isSelected } } />
-					<Settings { ...{ number_event, setAttributes, setState } } />
+					<Preview { ...{ className, number_event, post_type, sectionTitle, sectionSubTitle, backgroundColor, titleColor, align, setAttributes, setState, isSelected } } />
+					<Settings { ...{ number_event, post_type, setAttributes, setState } } />
 				</Fragment>
 			)
 		},

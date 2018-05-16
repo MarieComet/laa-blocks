@@ -10,7 +10,7 @@
  */
 
 //import './block/block.js';
-import './events/index.js';
+//import './events/index.js';
 import './posts/index.js';
 //import './cover-image/index.js';
 

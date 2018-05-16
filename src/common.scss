@@ -17,9 +17,14 @@ ul.posts-list {
 }
 ul.posts-list li {
 	list-style: none;
-	margin-bottom: 2rem;
+	margin-bottom: 1rem;
 	flex: 50%;
 	padding: 2rem 1rem;
+}
+@media(max-width: 575px) {
+	ul.posts-list li {
+		flex: 100%;
+	}
 }
 .wp-block-columns.has-2-columns ul.posts-list li {
 	flex: 100%;
@@ -27,7 +32,6 @@ ul.posts-list li {
 ul.posts-list li a {
 	text-decoration: none;
 	display: inline-block;
-	padding: 1rem 1.5rem;
 }
 ul.posts-list li .inner-post {
     background-color: $white;

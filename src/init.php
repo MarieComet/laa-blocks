@@ -64,33 +64,57 @@ add_action( 'enqueue_block_editor_assets', 'laa_posts_grid_cgb_editor_assets' );
  Pour les blos dynamiques (à partir de l'exemple 14)
 */
 
-function laa_dynamyc_render( $attributes ) {
-	error_log(print_r($attributes, true));
+function laa_dynamyc_render_posts( $attributes ) {
+
 	$args = array(
-      'posts_per_page' => ( $attributes['number_event'] ?: 3),
+		  'post_type' => ( $attributes['post_type'] ? : 'post' ),
+     	'posts_per_page' => ( $attributes['number_event'] ? : 3 ),
     );
 
-	$posts = get_posts( $args );
+	$posts = new WP_Query( $args );
 
     if ( count( $posts ) == 0 ) {
       return '<p>No posts</p>';
     }
 
-    $markup = '<div style="background-color:'.esc_attr( $attributes['backgroundColor'] ).';" class="align'.esc_attr( $attributes['align'] ).'"><ul class="wp-block-laa-posts-grid-events posts-list row">';
-    if ( $attributes['sectionTitle'] ) {
-    	$markup .= '<h1 class="content col-12 text-center" style="color:'.esc_attr( $attributes['titleColor'] ).';">' . esc_html( $attributes['sectionTitle'] ). '</h1>';
+    if ( isset ( $attributes['backgroundColor'] ) ) {
+    	$backgroundColor = $attributes['backgroundColor'];
+    } else {
+    	$backgroundColor = '';
     }
 
-	foreach( $posts as $post ) {
-
-		$markup .= sprintf(
-			'<li class=""><div class="inner-post">%2$s<a href="%1$s"><h1 class="entry-title">%3$s</h1></a></div></li>',
-			esc_url( get_permalink( $post->ID ) ),
-			get_the_post_thumbnail( $post->ID, 'archive_thumb', array( 'class' => 'wp-block-laa-posts-grid-post__image' ) ),
-			esc_html( get_the_title( $post->ID ) )
-		);
+    if ( isset ( $attributes['align'] ) ) {
+    	$align = $attributes['align'];
+    } else {
+    	$align = '';
     }
-    $markup .= '</ul>';
+
+    if ( isset ( $attributes['titleColor'] ) ) {
+    	$titleColor = $attributes['titleColor'];
+    } else {
+    	$titleColor = '';
+    }
+
+    $markup = '<div style="background-color:'. $backgroundColor .';" class="align'. $align .'"><ul class="wp-block-laa-posts-grid-events posts-list row">';
+    if ( isset( $attributes['sectionTitle'] ) ) {
+    	$markup .= '<h1 class="content col-12 text-center" style="color:'. $titleColor .';">' . esc_html( $attributes['sectionTitle'] ). '</h1>';
+    }
+    if ( $attributes['sectionSubTitle'] ) {
+    	$markup .= '<p class="section_subtitle col-12 text-center" style="color:'. $titleColor .';">' . esc_html( $attributes['sectionSubTitle'] ). '</h1>';
+    }
+    if( $posts->have_posts() ) {
+		while ( $posts->have_posts() ) { $posts->the_post();
+			$markup .= sprintf(
+				'<li class=""><div class="inner-post">%1$s<div class="inner-text"><h2 class="entry-title">%2$s</h2>%3$s</div></div></li>',
+				get_the_post_thumbnail( get_the_ID(), 'archive_thumb', array( 'class' => 'wp-block-laa-posts-grid-post__image' ) ),
+				esc_html( get_the_title() ),
+				get_the_excerpt()
+			);
+	    }
+	}
+    wp_reset_postdata();
+
+    $markup .= '</ul></div>';
 
     return $markup;
 }
@@ -103,13 +127,9 @@ function laa_register_blocks() {
 	if ( ! function_exists( 'register_block_type' ) ) {
 		return;
 	}
-
 	// Pour l'exemple 14
-  	register_block_type( 'laa-blocks/events', array(
-		'render_callback' => 'laa_dynamyc_render',
-	));
   	register_block_type( 'laa-blocks/posts', array(
-		'render_callback' => 'laa_dynamyc_render',
+		'render_callback' => 'laa_dynamyc_render_posts',
 	));
 }
 add_action( 'init', 'laa_register_blocks' );

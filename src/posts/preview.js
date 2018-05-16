@@ -18,9 +18,8 @@ export default class Preview extends Component {
 
 	getPost() {
 		// Appel API via la lib JS
-		//this.props.setAttributes( { number_event: this.props.number_event } );
-
-		const postQuery = new wp.api.models.Post();
+		const postType = this.props.post_type;
+		const postQuery = new wp.api.models[postType]();
 		// Fetch post via API
 		postQuery.fetch( { data: { per_page: this.props.number_event } } ).then( posts => {
 			this.setState( { posts: posts } )
@@ -34,6 +33,10 @@ export default class Preview extends Component {
 	componentDidUpdate(lastProps, lastStates) {
 
 		if( lastProps.number_event != this.props.number_event ) {
+			this.getPost()
+		}
+
+		if( lastProps.post_type != this.props.post_type ) {
 			this.getPost()
 		}
 	}
@@ -62,6 +65,14 @@ export default class Preview extends Component {
 			this.props.setAttributes( { sectionTitle: event.target.value } )
 		}
 
+		const onChangeSubContent = event => {
+			this.props.setAttributes( { sectionSubTitle: event.target.value } )
+		}
+
+		const getExcerpt = excerpt => {
+		  	return {__html: excerpt }
+		}
+
 		const classes = classnames(
 			this.props.className,
 			this.props.align ? `align${ this.props.align }` : null,
@@ -74,6 +85,7 @@ export default class Preview extends Component {
 			} } className={ classes }>
 				<ul className={ this.props.className + " posts-list row" }>
 					{ this.props.isSelected ? ( // N'afficher le champ seulement si le bloc est actif
+					<div className="col-12">
 						<input
 							type="text"
 				            value={ this.props.sectionTitle }
@@ -81,9 +93,22 @@ export default class Preview extends Component {
 				            onChange={ onChangeContent }
 				            placeholder={ __('Les derniers articles') }
 						/>
+
+						<input
+							type="text"
+				            value={ this.props.sectionSubTitle }
+				            className='section_subtitle col-12'
+				            onChange={ onChangeSubContent }
+				            placeholder={ __('Sous titre') }
+						/>
+					</div>
 					) : (
+					<div className="col-12">
 						<h1 className="section_title col-12 text-center" style={{ color: this.props.titleColor }}>{ this.props.sectionTitle }</h1>
+						<p className="section_subtitle col-12 text-center" style={{ color: this.props.titleColor }}>{ this.props.sectionSubTitle }</p>
+					</div>
 					) }
+
 					{ this.state.posts.map( posts => {
 						return (
 							<li className="">
@@ -95,9 +120,12 @@ export default class Preview extends Component {
 										/>
 									) }
 									<a href={ posts.link } target="_blank">
-										<h1 className="entry-title">
-										{ posts.title.rendered }
-										</h1>
+										<h2 className="entry-title" dangerouslySetInnerHTML={ getExcerpt( posts.title.rendered ) }>
+										</h2>
+										<div
+											className="post-excerpt"
+											dangerouslySetInnerHTML={ getExcerpt( posts.excerpt.rendered ) }
+										/>
 									</a>
 								</div>
 							</li>
