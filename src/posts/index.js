@@ -6,7 +6,8 @@ import Settings from './settings'
 import Toolbar from './toolbar'
 
 const { __ } = wp.i18n
-const { registerBlockType, RichText } = wp.blocks
+const { registerBlockType } = wp.blocks
+const { RichText } = wp.editor
 const { Fragment } = wp.element
 
 const validAlignments = [ 'left', 'center', 'right', 'wide', 'full' ];

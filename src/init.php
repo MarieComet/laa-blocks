@@ -67,15 +67,13 @@ add_action( 'enqueue_block_editor_assets', 'laa_posts_grid_cgb_editor_assets' );
 function laa_dynamyc_render_posts( $attributes ) {
 
 	$args = array(
-		  'post_type' => ( $attributes['post_type'] ? : 'post' ),
-     	'posts_per_page' => ( $attributes['number_event'] ? : 3 ),
-    );
+		'post_type' => ( isset( $attributes['post_type'] ) ? : 'post' ),
+    'posts_per_page' => ( isset( $attributes['number_event'] ) ? : 3 ),
+  );
 
 	$posts = new WP_Query( $args );
-
-    if ( count( $posts ) == 0 ) {
-      return '<p>No posts</p>';
-    }
+  
+  if( $posts->have_posts() ) {
 
     if ( isset ( $attributes['backgroundColor'] ) ) {
     	$backgroundColor = $attributes['backgroundColor'];
@@ -99,24 +97,26 @@ function laa_dynamyc_render_posts( $attributes ) {
     if ( isset( $attributes['sectionTitle'] ) ) {
     	$markup .= '<h1 class="content col-12 text-center" style="color:'. $titleColor .';">' . esc_html( $attributes['sectionTitle'] ). '</h1>';
     }
-    if ( $attributes['sectionSubTitle'] ) {
+    if ( isset( $attributes['sectionSubTitle'] ) ) {
     	$markup .= '<p class="section_subtitle col-12 text-center" style="color:'. $titleColor .';">' . esc_html( $attributes['sectionSubTitle'] ). '</h1>';
     }
-    if( $posts->have_posts() ) {
-		while ( $posts->have_posts() ) { $posts->the_post();
-			$markup .= sprintf(
-				'<li class=""><div class="inner-post">%1$s<div class="inner-text"><h2 class="entry-title">%2$s</h2>%3$s</div></div></li>',
-				get_the_post_thumbnail( get_the_ID(), 'archive_thumb', array( 'class' => 'wp-block-laa-posts-grid-post__image' ) ),
-				esc_html( get_the_title() ),
-				get_the_excerpt()
-			);
-	    }
-	}
-    wp_reset_postdata();
-
+    
+  		while ( $posts->have_posts() ) { $posts->the_post();
+  			$markup .= sprintf(
+  				'<li class=""><div class="inner-post">%1$s<div class="inner-text"><h2 class="entry-title"><a href="%3$s" title="%2$s">%2$s</a></h2><a href="%3$s" class="button btn-primary read-more" title="%2$s">Lire la suite</a></div></div></li>',
+  				get_the_post_thumbnail( get_the_ID(), 'archive_thumb', array( 'class' => 'wp-block-laa-posts-grid-post__image' ) ),
+  				esc_html( get_the_title() ),
+  				esc_url( get_the_permalink() )
+  			);
+  	  }
+      wp_reset_postdata();
     $markup .= '</ul></div>';
 
-    return $markup;
+	} else {
+    $markup = '<p>No posts</p>';
+  }
+
+  return $markup;
 }
 
 

@@ -5,7 +5,7 @@ const {
 	BlockControls,
 	BlockAlignmentToolbar,
 	AlignmentToolbar,
-} = wp.blocks
+} = wp.editor
 
 export default class Toolbar extends Component {
 

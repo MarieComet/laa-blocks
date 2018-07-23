@@ -1,7 +1,7 @@
 const { Spinner } = wp.components
 const { Component } = wp.element
 const { __ } = wp.i18n
-const { RichText } = wp.blocks
+const { RichText } = wp.editor
 
 import classnames from 'classnames';
 
@@ -46,7 +46,7 @@ export default class Preview extends Component {
 		console.log(this);
 		if ( ! this.state.posts ) {
 			return (
-				<p class="capitaine-placeholder">
+				<p className="capitaine-placeholder">
 					<Spinner />
 					{ __('Chargement des articles') }
 				</p>
@@ -55,7 +55,7 @@ export default class Preview extends Component {
 
 		if ( this.state.posts.length === 0 ) {
 			return (
-				<p class="capitaine-placeholder">
+				<p className="capitaine-placeholder">
 					{ __('Aucun article trouvé') }
 				</p>
 			)
@@ -115,7 +115,7 @@ export default class Preview extends Component {
 								<div className="inner-post h-100">
 									{ !! posts.feat_image_url && (
 										<img
-											src={ posts.feat_image_url.archive_thumb[0] }
+											src={ posts.feat_image_url.thumbnail[0] }
 											className="wp-block-laa-posts-grid-post__image"
 										/>
 									) }

@@ -5,7 +5,7 @@ const {
 	BlockControls,
 	InspectorControls,
 	ColorPalette,
-} = wp.blocks
+} = wp.editor
 
 const {
   	PanelBody,
